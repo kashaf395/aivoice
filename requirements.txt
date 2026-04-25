@@ -3,7 +3,7 @@
 # Requirements
 # =====================================
 
-# Python Version: 3.13.3
+
 
 # Web Framework
 flask==3.0.0
@@ -12,11 +12,9 @@ flask-cors==4.0.0
 # Audio Processing
 librosa==0.10.1
 soundfile==0.12.1
-imageio-ffmpeg>=0.4.9
-pydub>=0.25.1
 
-# Speech to Text
-openai-whisper==20231117
+# Speech to Text (using Groq API)
+requests>=2.31.0
 
 # Machine Learning
 scikit-learn==1.4.0
@@ -28,10 +26,6 @@ numpy==1.26.4
 pandas==2.2.0
 matplotlib==3.8.2
 seaborn==0.13.2
-
-# Utilities
-torch==2.2.0          
-tqdm==4.66.1
 
 # Database
 pymongo[srv]>=4.6.0
