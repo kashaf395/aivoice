@@ -52,7 +52,7 @@ def convert_webm_to_wav(webm_path: str) -> str:
         print(f"[Audio Input] Using imageio-ffmpeg from: {ffmpeg_exe}")
         
         result = subprocess.run(
-            [ffmpeg_exe, '-y', '-i', webm_path, '-acodec', 'pcm_s16le', '-ar', '22050', '-ac', '1', temp_wav_path],
+            [ffmpeg_exe, '-y', '-i', webm_path, '-acodec', 'pcm_s16le', '-ar', '16000', '-ac', '1', temp_wav_path],
             capture_output=True,
             text=True,
             timeout=30
@@ -76,7 +76,7 @@ def convert_webm_to_wav(webm_path: str) -> str:
         if result.returncode == 0:
             print(f"[Audio Input] Using system ffmpeg")
             result = subprocess.run(
-                ['ffmpeg', '-y', '-i', webm_path, '-acodec', 'pcm_s16le', '-ar', '22050', '-ac', '1', temp_wav_path],
+                ['ffmpeg', '-y', '-i', webm_path, '-acodec', 'pcm_s16le', '-ar', '16000', '-ac', '1', temp_wav_path],
                 capture_output=True,
                 text=True,
                 timeout=30
@@ -93,7 +93,7 @@ def convert_webm_to_wav(webm_path: str) -> str:
         from pydub import AudioSegment
         
         audio = AudioSegment.from_file(webm_path, format="webm")
-        audio = audio.set_frame_rate(22050).set_channels(1)
+        audio = audio.set_frame_rate(16000).set_channels(1)
         audio.export(temp_wav_path, format="wav")
         
         if os.path.exists(temp_wav_path) and os.path.getsize(temp_wav_path) > 0:
@@ -115,13 +115,13 @@ def convert_webm_to_wav(webm_path: str) -> str:
     )
 
 
-def load_audio(file_path: str, target_sr: int = 22050):
+def load_audio(file_path: str, target_sr: int = 16000):
     """
     Load audio file and return basic info.
     
     Args:
         file_path: Path to audio file
-        target_sr: Target sample rate (default 22050 Hz)
+        target_sr: Target sample rate (default 16000 Hz - matches model training)
     
     Returns:
         dict: audio data, sample rate, duration, channels info

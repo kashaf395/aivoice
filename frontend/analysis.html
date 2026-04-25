@@ -955,19 +955,42 @@
     let audioChunks = [];
     let recordedBlob = null;
 
-    // Start recording
+    // Start recording with optimized settings for emotion detection
     async function startRecording() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
+        // Optimized audio constraints for emotion detection
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,      // Remove echo
+            noiseSuppression: true,       // Reduce background noise
+            autoGainControl: true,         // Normalize volume
+            sampleRate: 16000,             // Match model's expected rate
+            channelCount: 1,               // Mono (model trained on mono)
+            latency: 0,                    // Low latency
+            volume: 1.0                     // Full volume
+          }
+        });
+        
+        // Use best available format
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+          ? 'audio/webm;codecs=opus' 
+          : 'audio/webm';
+        
+        mediaRecorder = new MediaRecorder(stream, {
+          mimeType: mimeType,
+          audioBitsPerSecond: 128000  // High quality
+        });
+        
         audioChunks = [];
 
         mediaRecorder.ondataavailable = event => {
-          audioChunks.push(event.data);
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
         };
 
         mediaRecorder.onstop = () => {
-          recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          recordedBlob = new Blob(audioChunks, { type: mimeType });
           const audioUrl = URL.createObjectURL(recordedBlob);
           const audio = document.getElementById('recorded-audio');
           audio.src = audioUrl;
@@ -979,7 +1002,7 @@
           stream.getTracks().forEach(track => track.stop());
         };
 
-        mediaRecorder.start();
+        mediaRecorder.start(100);  // Collect data every 100ms
         
         document.getElementById('btn-record').style.display = 'none';
         document.getElementById('btn-stop').style.display = 'block';
