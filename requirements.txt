@@ -3,6 +3,8 @@
 # Requirements
 # =====================================
 
+# Python Version: 3.13.3
+
 # Web Framework
 flask==3.0.0
 flask-cors==4.0.0
