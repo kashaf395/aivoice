@@ -188,6 +188,79 @@ def predict_stress(features: np.ndarray, model, le, scaler) -> dict:
         confidence = 1.0
         prob_dict = {emotion: 1.0}
 
+    # ========== SMART POST-PROCESSING FOR RECORDED AUDIO ==========
+    # Analyze raw features to detect anger indicators
+    # Feature layout: [0-3] Duration, [4-7] RMS Energy, [8-11] ZCR, [12-15] Spectral Centroid
+    
+    rms_mean = float(features[0, 4])    # Energy
+    rms_std = float(features[0, 5])     # Energy variation
+    zcr_mean = float(features[0, 8])    # Zero crossing rate
+    zcr_std = float(features[0, 9])     # ZCR variation
+    spec_cent_mean = float(features[0, 12])  # Spectral centroid (pitch proxy)
+    spec_cent_std = float(features[0, 13])   # Pitch variation
+    
+    # Anger indicators:
+    # - High energy (RMS)
+    # - High ZCR (more vocal intensity)
+    # - High spectral centroid (higher pitch)
+    # - High variation in these features
+    
+    print(f"[Feature Analysis]")
+    print(f"  RMS Energy: mean={rms_mean:.4f}, std={rms_std:.4f}")
+    print(f"  ZCR: mean={zcr_mean:.4f}, std={zcr_std:.4f}")
+    print(f"  Spectral Centroid: mean={spec_cent_mean:.2f}, std={spec_cent_std:.2f}")
+    
+    # Detect anger from features (regardless of model prediction)
+    anger_score = 0
+    
+    # High energy indicates anger/excitement
+    if rms_mean > 0.02:
+        anger_score += 2
+    elif rms_mean > 0.01:
+        anger_score += 1
+    
+    # High energy variation (burst of anger)
+    if rms_std > 0.01:
+        anger_score += 1
+    
+    # High ZCR indicates intensity
+    if zcr_mean > 0.05:
+        anger_score += 2
+    elif zcr_mean > 0.03:
+        anger_score += 1
+    
+    # High ZCR variation
+    if zcr_std > 0.02:
+        anger_score += 1
+    
+    # High spectral centroid (higher pitch in anger)
+    if spec_cent_mean > 2000:
+        anger_score += 2
+    elif spec_cent_mean > 1500:
+        anger_score += 1
+    
+    # High pitch variation (stress in voice)
+    if spec_cent_std > 500:
+        anger_score += 1
+    
+    print(f"  Anger Score (from features): {anger_score}")
+    
+    # If anger indicators are strong but model predicts happy/neutral
+    # This happens often with recorded audio due to mic/quality differences
+    if anger_score >= 5 and emotion.lower() in ['happy', 'neutral']:
+        # Check if angry has reasonable probability
+        if 'angry' in prob_dict and prob_dict['angry'] > 0.15:
+            print(f"  [CORRECTION] Strong anger indicators detected, overriding {emotion} -> angry")
+            emotion = 'angry'
+            confidence = max(confidence, prob_dict['angry'])
+    
+    # If very calm features but model predicts angry
+    elif anger_score <= 2 and emotion.lower() == 'angry':
+        if 'neutral' in prob_dict and prob_dict['neutral'] > 0.20:
+            print(f"  [CORRECTION] Low anger indicators, adjusting angry -> neutral")
+            emotion = 'neutral'
+            confidence = max(confidence, prob_dict['neutral'])
+    
     # Map emotion to stress level
     stress_level = EMOTION_TO_STRESS.get(emotion.lower(), "Medium")
     stress_score = STRESS_SCORES[stress_level]
