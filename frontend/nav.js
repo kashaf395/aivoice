@@ -1,3 +1,22 @@
+let mobileMenuOpen = false;
+
+function toggleMobileMenu() {
+  mobileMenuOpen = !mobileMenuOpen;
+  const navLinks = document.querySelector('.nav-links');
+  const navAuth = document.querySelector('.nav-auth');
+  const hamburger = document.querySelector('.hamburger');
+
+  if (mobileMenuOpen) {
+    navLinks.classList.add('mobile-open');
+    navAuth.classList.add('mobile-open');
+    hamburger.classList.add('active');
+  } else {
+    navLinks.classList.remove('mobile-open');
+    navAuth.classList.remove('mobile-open');
+    hamburger.classList.remove('active');
+  }
+}
+
 function renderNavbar() {
   const user = getUser();
   const currentPage = window.location.pathname.split('/').pop();
@@ -7,6 +26,14 @@ function renderNavbar() {
       <img src="logo.jpg" alt="Logo" style="height: 32px; width: 32px; border-radius: 8px; object-fit: cover;">
       <span>AI Voice Detector</span>
     </a>
+
+    <!-- Hamburger Menu Button (Mobile) -->
+    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
     <div class="nav-links">
       <a href="home.html" class="nav-link ${currentPage === 'home.html' ? 'active' : ''}">Home</a>
       <a href="analysis.html" class="nav-link ${currentPage === 'analysis.html' ? 'active' : ''}">Analyze</a>
@@ -29,6 +56,13 @@ function renderNavbar() {
   if (navbar) {
     navbar.innerHTML = navHtml;
   }
+
+  // Close mobile menu on window resize if above mobile breakpoint
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && mobileMenuOpen) {
+      toggleMobileMenu();
+    }
+  });
 }
 
 async function handleLogout() {
