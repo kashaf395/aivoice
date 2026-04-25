@@ -686,12 +686,16 @@ def admin_messages():
 
 
 if __name__ == "__main__":
+    import os
+
     print("\n" + "=" * 50)
     print("  Urdu Speech Detection System")
     print("  Stress + Lie Detection (ML Only)")
     print("  MongoDB: Connected")
     print("=" * 50)
+
     try:
-        app.run(debug=True, host="0.0.0.0", port=5000)
+        port = int(os.environ.get("PORT", 10000))  # Render auto port
+        app.run(host="0.0.0.0", port=port)
     finally:
         close_db()
