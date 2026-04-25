@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Urdu Speech Analysis</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 140px 20px 40px;
+    }
+    .admin-header { margin-bottom: 2rem; }
+    .admin-header h1 { font-size: 2rem; margin-bottom: 0.3rem; }
+    .admin-header p { color: var(--text-muted); }
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .admin-stat-card {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+    }
+    .admin-stat-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .admin-stat-card .val { font-size: 2rem; font-weight: 800; color: var(--primary-light); }
+    .admin-stat-card .lab { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 2rem;
+    }
+    .admin-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .card-header h3 i { color: var(--primary-light); }
+    .card-body { padding: 20px 24px; }
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .dist-row:last-child { margin-bottom: 0; }
+    .dist-label { min-width: 80px; font-size: 0.85rem; color: var(--text-muted); }
+    .dist-bar-wrap { flex: 1; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; }
+    .dist-bar { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
+    .dist-count { min-width: 40px; text-align: right; font-size: 0.85rem; font-weight: 600; color: var(--primary-light); }
+    .admin-table-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .table-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .table-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .table-header h3 i { color: var(--primary-light); }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .status-badge {
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-green { background: rgba(16,185,129,0.2); color: #10b981; }
+    .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; }
+    .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .badge-purple { background: rgba(167,139,250,0.2); color: #a78bfa; }
+    .user-cell { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: white;
+    }
+    .no-data { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.9rem; }
+    @media (max-width: 768px) {
+      .admin-stats { grid-template-columns: repeat(2, 1fr); }
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="auth.js"></script>
+  <script>
+    const user = getUser();
+    if (!user || user.role !== 'admin') window.location.href = user ? 'home.html' : 'login.html';
+  </script>
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1><i class="fas fa-shield-halved" style="color:var(--primary-light)"></i> Admin Dashboard</h1>
+      <p>System overview, user management & analysis monitoring</p>
+    </div>
+
+    <div class="admin-stats" id="statsRow">
+      <div class="admin-stat-card">
+        <div class="icon" style="color:#a78bfa"><i class="fas fa-users"></i></div>
+        <div class="val" id="statUsers">0</div>
+        <div class="lab">Total Users</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="icon" style="color:#10b981"><i class="fas fa-microphone"></i></div>
+        <div class="val" id="statAnalyses">0</div>
+        <div class="lab">Total Analyses</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="icon" style="color:#f59e0b"><i class="fas fa-brain"></i></div>
+        <div class="val">90%</div>
+        <div class="lab">Model Accuracy</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="icon" style="color:#ef4444"><i class="fas fa-server"></i></div>
+        <div class="val">Active</div>
+        <div class="lab">Server Status</div>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="card-header">
+          <h3><i class="fas fa-face-smile"></i> Emotion Distribution</h3>
+        </div>
+        <div class="card-body" id="emotionDist">
+          <div class="no-data">Loading...</div>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="card-header">
+          <h3><i class="fas fa-gauge-high"></i> Stress Level Distribution</h3>
+        </div>
+        <div class="card-body" id="stressDist">
+          <div class="no-data">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-table-card">
+      <div class="table-header">
+        <h3><i class="fas fa-users"></i> All Registered Users</h3>
+        <span style="font-size:0.8rem; color:var(--text-muted)" id="userCount">0 users</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Analyses</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="5" class="no-data">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-card">
+      <div class="table-header">
+        <h3><i class="fas fa-chart-line"></i> Recent Analysis Reports</h3>
+        <span style="font-size:0.8rem; color:var(--text-muted)" id="reportCount">0 reports</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Emotion</th>
+              <th>Stress</th>
+              <th>Lie Prob.</th>
+              <th>Confidence</th>
+              <th>Duration</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTable">
+            <tr><td colspan="6" class="no-data">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-card">
+      <div class="table-header">
+        <h3><i class="fas fa-envelope"></i> Contact Messages</h3>
+        <span style="font-size:0.8rem; color:var(--text-muted)" id="msgCount">0 messages</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Message</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="messagesTable">
+            <tr><td colspan="5" class="no-data">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; text-align:left;">
+      <div>
+        <div class="nav-brand" style="margin-bottom:1rem;">
+          <span>🎙️</span> Urdu Analysis
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Empowering Urdu language processing with state-of-the-art machine learning for stress, emotion, and deception detection.</p>
+      </div>
+      <div>
+        <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Quick Links</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <a href="home.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Home</a>
+          <a href="analysis.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Analyze</a>
+          <a href="about.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">About Us</a>
+          <a href="contact.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Legal</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Privacy Policy</a>
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Terms of Service</a>
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
+      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 Urdu Speech Analysis Project. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    const emotionColors = {
+      angry: '#ef4444', disgust: '#f97316', happy: '#10b981',
+      neutral: '#3b82f6', sad: '#8b5cf6', fear: '#ec4899'
+    };
+    const stressColors = { Low: '#10b981', Medium: '#f59e0b', High: '#ef4444' };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Load stats
+        const statsData = await apiCall('/api/admin/stats');
+        const stats = statsData.stats;
+        document.getElementById('statUsers').textContent = stats.total_users;
+        document.getElementById('statAnalyses').textContent = stats.total_analyses;
+
+        // Emotion distribution
+        const emoDist = stats.emotion_distribution || {};
+        const emoEl = document.getElementById('emotionDist');
+        const emoTotal = Object.values(emoDist).reduce((a,b) => a+b, 0) || 1;
+        if (Object.keys(emoDist).length > 0) {
+          emoEl.innerHTML = '';
+          Object.entries(emoDist).sort((a,b) => b[1]-a[1]).forEach(([emo, count]) => {
+            const pct = (count / emoTotal * 100).toFixed(0);
+            const color = emotionColors[emo] || '#a78bfa';
+            emoEl.innerHTML += `
+              <div class="dist-row">
+                <span class="dist-label" style="color:${color}">${emo}</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:${pct}%; background:${color}"></div></div>
+                <span class="dist-count">${count}</span>
+              </div>`;
+          });
+        } else {
+          emoEl.innerHTML = '<div class="no-data">No analysis data yet</div>';
+        }
+
+        // Stress distribution
+        const sDist = stats.stress_distribution || {};
+        const sEl = document.getElementById('stressDist');
+        const sTotal = Object.values(sDist).reduce((a,b) => a+b, 0) || 1;
+        if (Object.keys(sDist).length > 0) {
+          sEl.innerHTML = '';
+          ['Low','Medium','High'].forEach(level => {
+            const count = sDist[level] || 0;
+            const pct = (count / sTotal * 100).toFixed(0);
+            const color = stressColors[level] || '#a78bfa';
+            sEl.innerHTML += `
+              <div class="dist-row">
+                <span class="dist-label" style="color:${color}">${level}</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:${pct}%; background:${color}"></div></div>
+                <span class="dist-count">${count}</span>
+              </div>`;
+          });
+        } else {
+          sEl.innerHTML = '<div class="no-data">No analysis data yet</div>';
+        }
+
+        // Recent reports
+        const reports = statsData.recent || [];
+        document.getElementById('reportCount').textContent = reports.length + ' reports';
+        const rBody = document.getElementById('reportsTable');
+        if (reports.length > 0) {
+          rBody.innerHTML = '';
+          reports.forEach(r => {
+            const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const stressBadge = r.stress_level === 'Low' ? 'badge-green' : r.stress_level === 'Medium' ? 'badge-orange' : 'badge-red';
+            const lieBadge = r.lie_probability === 'Low' ? 'badge-green' : r.lie_probability === 'Medium' ? 'badge-orange' : 'badge-red';
+            rBody.innerHTML += `
+              <tr>
+                <td><span class="badge-purple status-badge">${r.emotion || 'N/A'}</span></td>
+                <td><span class="status-badge ${stressBadge}">${r.stress_level || 'N/A'}</span></td>
+                <td><span class="status-badge ${lieBadge}">${r.lie_probability || 'N/A'}</span></td>
+                <td>${r.ml_confidence || '-'}</td>
+                <td>${r.audio_duration || '-'}s</td>
+                <td>${date}</td>
+              </tr>`;
+          });
+        } else {
+          rBody.innerHTML = '<tr><td colspan="6" class="no-data">No reports yet</td></tr>';
+        }
+      } catch (err) {
+        console.error('Stats error:', err);
+      }
+
+      // Load users
+      try {
+        const usersData = await apiCall('/api/admin/users');
+        const users = usersData.users || [];
+        document.getElementById('userCount').textContent = users.length + ' users';
+        const uBody = document.getElementById('usersTable');
+        if (users.length > 0) {
+          uBody.innerHTML = '';
+          users.forEach(u => {
+            const date = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const roleBadge = u.role === 'admin' ? 'badge-red' : 'badge-green';
+            uBody.innerHTML += `
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">${u.name ? u.name.charAt(0).toUpperCase() : '?'}</div>
+                    <span>${u.name || 'Unknown'}</span>
+                  </div>
+                </td>
+                <td style="color:var(--text-muted)">${u.email}</td>
+                <td><span class="status-badge ${roleBadge}">${u.role}</span></td>
+                <td>${u.analyses_count || 0}</td>
+                <td style="color:var(--text-muted)">${date}</td>
+              </tr>`;
+          });
+        } else {
+          uBody.innerHTML = '<tr><td colspan="5" class="no-data">No users registered</td></tr>';
+        }
+      } catch (err) {
+        console.error('Users error:', err);
+      }
+
+      // Load contact messages
+      try {
+        const msgData = await apiCall('/api/admin/messages');
+        const messages = msgData.messages || [];
+        document.getElementById('msgCount').textContent = messages.length + ' messages';
+        const mBody = document.getElementById('messagesTable');
+        if (messages.length > 0) {
+          mBody.innerHTML = '';
+          messages.forEach(m => {
+            const date = new Date(m.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const subjectMap = { general: 'General', technical: 'Technical', bug: 'Bug Report', feature: 'Feature Request', collaboration: 'Collaboration' };
+            const subjectBadge = m.subject === 'bug' ? 'badge-red' : m.subject === 'feature' ? 'badge-purple' : m.subject === 'technical' ? 'badge-orange' : 'badge-green';
+            mBody.innerHTML += `
+              <tr>
+                <td style="font-weight:600">${m.name}</td>
+                <td style="color:var(--text-muted)">${m.email}</td>
+                <td><span class="status-badge ${subjectBadge}">${subjectMap[m.subject] || m.subject}</span></td>
+                <td style="max-width:250px; overflow:hidden; text-overflow:ellipsis; color:var(--text-muted); white-space:nowrap;" title="${m.message}">${m.message}</td>
+                <td style="color:var(--text-muted)">${date}</td>
+              </tr>`;
+          });
+        } else {
+          mBody.innerHTML = '<tr><td colspan="5" class="no-data">No messages yet</td></tr>';
+        }
+      } catch (err) {
+        console.error('Messages error:', err);
+      }
+    });
+  </script>
+</body>
+</html>

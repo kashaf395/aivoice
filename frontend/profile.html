@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - Urdu Speech Analysis</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 140px 20px 40px;
+    }
+    .btn-edit-profile {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-edit-profile:hover { opacity: 0.85; }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 450px;
+    }
+    .modal h3 {
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-save { background: var(--accent); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: var(--text-main); }
+    .btn-save:hover { opacity: 0.85; }
+    .btn-cancel:hover { background: rgba(255,255,255,0.15); }
+    .password-section {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .password-section h4 {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .profile-top {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .profile-sidebar {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      position: sticky;
+      top: 140px;
+      align-self: start;
+    }
+    .profile-avatar {
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      margin: 0 auto 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 8px 30px rgba(124,58,237,0.3);
+    }
+    .profile-sidebar h2 { margin-bottom: 0.3rem; font-size: 1.4rem; }
+    .profile-sidebar .email { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .profile-sidebar .role-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .role-admin { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .role-user { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .profile-sidebar .meta-list {
+      text-align: left;
+      margin-top: 1.5rem;
+    }
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.85rem;
+    }
+    .meta-item:last-child { border-bottom: none; }
+    .meta-item .label { color: var(--text-muted); }
+    .meta-item .val { color: var(--text-main); font-weight: 600; }
+    .btn-logout {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .btn-logout:hover { opacity: 0.85; }
+    .profile-main { display: flex; flex-direction: column; gap: 24px; }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .stat-card .val { font-size: 1.6rem; font-weight: 800; color: var(--primary-light); }
+    .stat-card .lab { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    .section-header h3 i { color: var(--primary-light); }
+    .report-count { font-size: 0.8rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 50px; }
+    .reports-list { padding: 16px 24px; }
+    .report-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .report-item:hover { border-color: rgba(167,139,250,0.3); background: rgba(255,255,255,0.05); }
+    .report-item:last-child { margin-bottom: 0; }
+    .report-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .report-emotion { font-weight: 700; font-size: 1.1rem; text-transform: uppercase; }
+    .report-date { font-size: 0.8rem; color: var(--text-muted); }
+    .report-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+    .report-detail-item { text-align: center; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+    .report-detail-item .dl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+    .report-detail-item .dv { font-size: 0.95rem; font-weight: 700; margin-top: 2px; }
+    .report-transcription {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      direction: rtl;
+      text-align: right;
+    }
+    .report-expand { display: none; }
+    .report-item.expanded .report-expand { display: block; }
+    .no-reports { text-align: center; padding: 40px; color: var(--text-muted); }
+    .no-reports i { font-size: 2.5rem; opacity: 0.3; margin-bottom: 12px; display: block; }
+    @media (max-width: 768px) {
+      .profile-top { grid-template-columns: 1fr; }
+      .profile-sidebar { position: static; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .report-details { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+  <script src="auth.js"></script>
+  <script>
+    if (!getUser()) window.location.href = 'login.html';
+  </script>
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="profile-container">
+    <div class="profile-top">
+      <div class="profile-sidebar">
+        <div class="profile-avatar" id="avatarLetter">U</div>
+        <h2 id="userName">User Name</h2>
+        <div class="email" id="userEmail">user@example.com</div>
+        <div id="roleBadge" class="role-badge role-user">User</div>
+        <div class="meta-list">
+          <div class="meta-item"><span class="label">Account Created</span><span class="val" id="joinDate">-</span></div>
+          <div class="meta-item"><span class="label">Total Analyses</span><span class="val" id="totalAnalyses">0</span></div>
+          <div class="meta-item"><span class="label">Avg Stress Level</span><span class="val" id="avgStress">N/A</span></div>
+          <div class="meta-item"><span class="label">Last Analysis</span><span class="val" id="lastAnalysis">Never</span></div>
+        </div>
+        <button class="btn-edit-profile" id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+        <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+      </div>
+
+      <div class="profile-main">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="icon" style="color: #a78bfa;"><i class="fas fa-microphone"></i></div>
+            <div class="val" id="statTotal">0</div>
+            <div class="lab">Total Analyses</div>
+          </div>
+          <div class="stat-card">
+            <div class="icon" style="color: #10b981;"><i class="fas fa-face-smile"></i></div>
+            <div class="val" id="statLow">0</div>
+            <div class="lab">Low Stress</div>
+          </div>
+          <div class="stat-card">
+            <div class="icon" style="color: #f59e0b;"><i class="fas fa-face-meh"></i></div>
+            <div class="val" id="statMed">0</div>
+            <div class="lab">Medium Stress</div>
+          </div>
+          <div class="stat-card">
+            <div class="icon" style="color: #ef4444;"><i class="fas fa-face-angry"></i></div>
+            <div class="val" id="statHigh">0</div>
+            <div class="lab">High Stress</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h3><i class="fas fa-chart-line"></i> Analysis Reports</h3>
+            <span class="report-count" id="reportCount">0 reports</span>
+          </div>
+          <div class="reports-list" id="reportsList">
+            <div class="no-reports">
+              <i class="fas fa-microphone-slash"></i>
+              <p>No analysis reports yet</p>
+              <p style="font-size:0.8rem; margin-top:8px;">Go to <a href="analysis.html" style="color:var(--primary-light)">Analyze</a> to start</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="editProfileModal">
+    <div class="modal">
+      <h3><i class="fas fa-user-edit" style="color:var(--primary-light);"></i> Edit Profile</h3>
+      
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="editName" placeholder="Enter your name">
+      </div>
+      
+      <div class="password-section">
+        <h4>Change Password (optional)</h4>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="currentPassword" placeholder="Required to change password">
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPassword" placeholder="Min 6 characters">
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="cancelEdit">Cancel</button>
+        <button class="btn-save" id="saveProfile">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; text-align:left;">
+      <div>
+        <div class="nav-brand" style="margin-bottom:1rem;">
+          <span>🎙️</span> Urdu Analysis
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Empowering Urdu language processing with state-of-the-art machine learning for stress, emotion, and deception detection.</p>
+      </div>
+      <div>
+        <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Quick Links</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <a href="home.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Home</a>
+          <a href="analysis.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Analyze</a>
+          <a href="about.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">About Us</a>
+          <a href="contact.html" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Legal</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Privacy Policy</a>
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Terms of Service</a>
+          <a href="#" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
+      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 Urdu Speech Analysis Project. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = getUser();
+      if (!user) { window.location.href = 'login.html'; return; }
+
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('avatarLetter').textContent = user.name.charAt(0).toUpperCase();
+      document.getElementById('roleBadge').textContent = user.role === 'admin' ? 'Admin' : 'User';
+      document.getElementById('roleBadge').className = 'role-badge ' + (user.role === 'admin' ? 'role-admin' : 'role-user');
+
+      try {
+        const data = await apiCall('/api/profile');
+        const reports = data.reports || [];
+        const analysesCount = data.user.analyses_count || 0;
+
+        document.getElementById('totalAnalyses').textContent = analysesCount;
+        document.getElementById('statTotal').textContent = analysesCount;
+
+        if (data.user.created_at) {
+          document.getElementById('joinDate').textContent = new Date(data.user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        } else {
+          document.getElementById('joinDate').textContent = 'N/A';
+        }
+
+        // Stress counts
+        let lowC=0, medC=0, highC=0;
+        reports.forEach(r => {
+          if (r.stress_level === 'Low') lowC++;
+          else if (r.stress_level === 'Medium') medC++;
+          else if (r.stress_level === 'High') highC++;
+        });
+        document.getElementById('statLow').textContent = lowC;
+        document.getElementById('statMed').textContent = medC;
+        document.getElementById('statHigh').textContent = highC;
+
+        if (reports.length > 0) {
+          const dominant = lowC >= medC && lowC >= highC ? 'Low' : medC >= highC ? 'Medium' : 'High';
+          document.getElementById('avgStress').textContent = dominant;
+          document.getElementById('lastAnalysis').textContent = new Date(reports[0].created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        document.getElementById('reportCount').textContent = reports.length + ' report' + (reports.length !== 1 ? 's' : '');
+
+        // Render reports
+        const reportsList = document.getElementById('reportsList');
+        if (reports.length > 0) {
+          reportsList.innerHTML = '';
+          reports.forEach((r, idx) => {
+            const date = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const stressColor = r.stress_level === 'Low' ? '#10b981' : r.stress_level === 'Medium' ? '#f59e0b' : '#ef4444';
+            const lieColor = r.lie_probability === 'Low' ? '#10b981' : r.lie_probability === 'Medium' ? '#f59e0b' : '#ef4444';
+            const badgeClass = r.stress_level === 'Low' ? 'badge-green' : r.stress_level === 'Medium' ? 'badge-orange' : 'badge-red';
+            reportsList.innerHTML += `
+              <div class="report-item" onclick="this.classList.toggle('expanded')">
+                <div class="report-top">
+                  <div>
+                    <span class="report-emotion" style="color: var(--primary-light)">${r.emotion || 'N/A'}</span>
+                    <span class="badge ${badgeClass}" style="margin-left: 10px;">${r.stress_level || 'N/A'} Stress</span>
+                  </div>
+                  <div class="report-date">${date}</div>
+                </div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">
+                  Duration: ${r.audio_duration || '-'}s &bull; Confidence: ${r.ml_confidence || '-'}
+                </div>
+                <div class="report-expand">
+                  <div class="report-details">
+                    <div class="report-detail-item">
+                      <div class="dl">Stress Level</div>
+                      <div class="dv" style="color:${stressColor}">${r.stress_level || 'N/A'}</div>
+                    </div>
+                    <div class="report-detail-item">
+                      <div class="dl">Lie Probability</div>
+                      <div class="dv" style="color:${lieColor}">${r.lie_probability || 'N/A'}</div>
+                    </div>
+                    <div class="report-detail-item">
+                      <div class="dl">Lie Score</div>
+                      <div class="dv">${r.lie_percentage || 'N/A'}</div>
+                    </div>
+                  </div>
+                  ${r.transcription ? `<div class="report-transcription">${r.transcription}</div>` : ''}
+                </div>
+              </div>`;
+          });
+        }
+      } catch (err) {
+        console.error('Profile fetch error:', err);
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try { await apiCall('/api/logout', { method: 'POST' }); } catch(e) {}
+        clearAuth();
+        window.location.href = 'login.html';
+      });
+
+      // Edit Profile Modal
+      const modal = document.getElementById('editProfileModal');
+      const editBtn = document.getElementById('editProfileBtn');
+      const cancelBtn = document.getElementById('cancelEdit');
+      const saveBtn = document.getElementById('saveProfile');
+      const nameInput = document.getElementById('editName');
+      const currentPassInput = document.getElementById('currentPassword');
+      const newPassInput = document.getElementById('newPassword');
+
+      editBtn.addEventListener('click', () => {
+        nameInput.value = user.name || '';
+        currentPassInput.value = '';
+        newPassInput.value = '';
+        modal.classList.add('active');
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      });
+
+      saveBtn.addEventListener('click', async () => {
+        const data = {
+          name: nameInput.value.trim(),
+          password: newPassInput.value.trim(),
+          current_password: currentPassInput.value.trim()
+        };
+
+        if (!data.name && !data.password) {
+          alert('Please enter name or password to update');
+          return;
+        }
+
+        if (data.password && data.password.length < 6) {
+          alert('Password must be at least 6 characters');
+          return;
+        }
+
+        try {
+          const result = await apiCall('/api/profile/update', {
+            method: 'POST',
+            body: JSON.stringify(data)
+          });
+
+          // Update local storage
+          const updatedUser = { ...user, name: result.user.name };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+
+          // Update UI
+          document.getElementById('userName').textContent = result.user.name;
+          document.getElementById('avatarLetter').textContent = result.user.name.charAt(0).toUpperCase();
+
+          modal.classList.remove('active');
+          alert('Profile updated successfully!');
+        } catch (err) {
+          alert(err.message || 'Failed to update profile');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
