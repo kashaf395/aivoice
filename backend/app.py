@@ -7,6 +7,10 @@ import os
 import hashlib
 import secrets
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 from modules.database import (
     get_db, close_db,
@@ -194,6 +198,16 @@ def test():
             "Evaluation & Reporting Module"
         ]
     })
+
+
+@app.route("/api/config", methods=["GET"])
+def get_config():
+    """Return public configuration like Google Client ID"""
+    # Fallback to hardcoded ID if env var not set
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "690284213813-h04mmnp18o55u8to9mhgl5boi3q4nc6b.apps.googleusercontent.com")
+    return jsonify({
+        "google_client_id": client_id
+    }), 200
 
 
 @app.route("/api/predict", methods=["POST"])
@@ -490,6 +504,38 @@ def login():
     if not user or user["password"] != hash_password(password):
         return jsonify({"error": "Invalid email or password"}), 401
 
+    token = secrets.token_hex(32)
+    db = get_db()
+    db.sessions.insert_one({"token": token, "user_id": str(user["_id"]), "created_at": datetime.utcnow()})
+
+    return jsonify({
+        "token": token,
+        "user": {"id": str(user["_id"]), "name": user["name"], "email": user["email"], "role": user["role"]}
+    }), 200
+
+
+@app.route("/api/google-login", methods=["POST"])
+def google_login():
+    """Handle Google OAuth login"""
+    data = request.get_json()
+    google_token = data.get("token", "")
+    email = data.get("email", "").strip().lower()
+    name = data.get("name", "").strip()
+
+    if not google_token or not email:
+        return jsonify({"error": "Invalid Google token"}), 400
+
+    # Check if user exists
+    user = find_user_by_email(email)
+    
+    if not user:
+        # Create new user from Google account
+        random_password = secrets.token_hex(16)  # Random password for Google users
+        user = create_user(name or "Google User", email, hash_password(random_password))
+        if not user:
+            return jsonify({"error": "Failed to create account"}), 500
+
+    # Create session token
     token = secrets.token_hex(32)
     db = get_db()
     db.sessions.insert_one({"token": token, "user_id": str(user["_id"]), "created_at": datetime.utcnow()})
