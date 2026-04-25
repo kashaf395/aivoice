@@ -9,9 +9,12 @@ Uses: whisper
 import os
 import requests
 from pathlib import Path
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
 
-_API_KEY = "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"
+_API_KEY = os.getenv("GROQ_API_KEY", "")
 _API_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
 
 
