@@ -1,4 +1,7 @@
-const API = 'http://localhost:5000';
+// Auto-detect: same-origin for deployed, localhost for development
+const API = window.location.origin.includes('localhost')
+  ? 'http://localhost:5000'
+  : ''; // Empty string = same origin (relative path)
 
 function getToken() {
   return localStorage.getItem('token');
