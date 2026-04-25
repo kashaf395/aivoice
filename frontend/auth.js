@@ -1,6 +1,6 @@
 // Auto-detect: same-origin for deployed, localhost for development
-const API = window.location.origin.includes('localhost')
-  ? 'http://localhost:5000'
+const API = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
+  ? '' // Same origin (relative path) - backend serves frontend
   : ''; // Empty string = same origin (relative path)
 
 function getToken() {

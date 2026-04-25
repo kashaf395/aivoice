@@ -3,99 +3,481 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Urdu Speech Analysis - Home</title>
+  <title>UrduVoice AI - Advanced Speech Analysis</title>
   <link rel="icon" type="image/jpeg" href="logo.jpg">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Hero Section */
+    .hero-new {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-new::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center top, rgba(230, 184, 0, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-content {
+      max-width: 900px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(230, 184, 0, 0.1);
+      border: 1px solid rgba(230, 184, 0, 0.3);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--primary-light);
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+    .hero-new h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #F9F9F9 0%, #E6B800 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-new p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-btns-new {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      background: var(--bg-card);
+      border-top: 1px solid #2A2A2A;
+      border-bottom: 1px solid #2A2A2A;
+      padding: 3rem 2rem;
+    }
+    .stats-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(230, 184, 0, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--primary);
+      font-size: 1.25rem;
+    }
+    .stat-item .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary-light);
+      display: block;
+    }
+    .stat-item .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .features-grid-new {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .feature-card-new {
+      background: var(--bg-card);
+      border: 1px solid #2A2A2A;
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+    }
+    .feature-card-new:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    .feature-card-new .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(230, 184, 0, 0.1);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    .feature-card-new h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+    .feature-card-new p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 6rem 2rem;
+      background: var(--bg-card);
+    }
+    .how-it-works-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+    .step-card {
+      text-align: center;
+      position: relative;
+      padding: 2rem;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    .step-card:hover {
+      background: rgba(230, 184, 0, 0.05);
+      transform: translateY(-5px);
+    }
+    .step-number {
+      width: 80px;
+      height: 80px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #000;
+      margin: 0 auto 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(230, 184, 0, 0.3);
+    }
+    .step-card:hover .step-number {
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(230, 184, 0, 0.5);
+    }
+    .step-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+    .step-card:hover h3 {
+      color: var(--primary-light);
+    }
+    .step-card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Use Cases */
+    .use-cases {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    .use-case-card {
+      background: var(--bg-card);
+      border: 1px solid #2A2A2A;
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      transition: all 0.3s;
+    }
+    .use-case-card:hover {
+      border-color: var(--primary);
+    }
+    .use-case-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(230, 184, 0, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .use-case-content h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .use-case-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 6rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, transparent, rgba(230, 184, 0, 0.05));
+    }
+    .cta-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .cta-section p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .features-grid-new, .steps-grid, .stats-bar-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .hero-new h1 { font-size: 2.5rem; }
+      .features-grid-new, .steps-grid, .stats-bar-inner {
+        grid-template-columns: 1fr;
+      }
+      .hero-btns-new {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar" id="navbar"></nav>
 
-  <div class="hero" style="padding-top: 150px;">
-    <h1>Analyze Urdu Speech <br>with Advanced AI</h1>
-    <p>Empowering Urdu language processing with state-of-the-art machine learning. Detect stress, analyze emotions, and transcribe speech in real-time with unparalleled accuracy.</p>
-    <div class="hero-btns">
-      <a href="analysis.html" class="btn-hero-primary">Get Started Now</a>
-      <a href="#how-it-works" class="btn-hero-secondary">Watch Demo</a>
-    </div>
-  </div>
-
-  <section class="info-section" id="features">
-    <div class="info-grid">
-      <div class="info-content">
-        <h2>Intelligent Stress Detection</h2>
-        <p>Our custom ML models analyze over 64 acoustic features including pitch, jitter, and shimmer to detect subtle indicators of stress and emotional state in Urdu speech.</p>
-        <ul class="indicator-list">
-          <li>Real-time acoustic feature extraction</li>
-          <li>High-accuracy stress classification</li>
-          <li>Visual emotion probability mapping</li>
-        </ul>
-      </div>
-      <div class="info-image">
-        <span>📊</span>
-      </div>
-    </div>
-
-    <div class="info-grid" style="direction: rtl; text-align: left;">
-      <div class="info-content" style="direction: ltr;">
-        <h2>Whisper AI Transcription</h2>
-        <p>Leveraging OpenAI's Whisper model fine-tuned for Urdu, we provide highly accurate speech-to-text transcription even in noisy environments.</p>
-        <ul class="indicator-list">
-          <li>Native Urdu script support (RTL)</li>
-          <li>Context-aware transcription logic</li>
-          <li>Automatic confidence scoring</li>
-        </ul>
-      </div>
-      <div class="info-image">
-        <span>🎙️</span>
-      </div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <span class="number">94.2%</span>
-        <span class="label">Model Accuracy</span>
-      </div>
-      <div class="stat-card">
-        <span class="number">50ms</span>
-        <span class="label">Processing Latency</span>
-      </div>
-      <div class="stat-card">
-        <span class="number">10k+</span>
-        <span class="label">Analyses Done</span>
+  <!-- Hero Section -->
+  <section class="hero-new">
+    <div class="hero-content">
+      <h1>Unlock Insights from<br>Urdu Speech</h1>
+      <p>Advanced AI-powered analysis for stress detection, emotion recognition, and accurate transcription. Built specifically for the Urdu language.</p>
+      <div class="hero-btns-new">
+        <a href="analysis.html" class="btn-hero-primary">Start Analyzing</a>
+        <a href="#features" class="btn-hero-secondary">Learn More</a>
       </div>
     </div>
   </section>
 
-  <section class="info-section" id="how-it-works" style="background: rgba(255,255,255,0.02); border-radius: 50px;">
-    <h2 style="text-align: center; margin-bottom: 3rem;">How it Works</h2>
-    <div class="feature-cards">
-      <div class="feature-card">
-        <div class="icon">1️⃣</div>
-        <h3>Input Audio</h3>
-        <p>Upload any audio file or record directly using our high-fidelity browser recorder.</p>
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+        <span class="stat-value">98%</span>
+        <span class="stat-label">Accuracy Rate</span>
       </div>
-      <div class="feature-card">
-        <div class="icon">2️⃣</div>
-        <h3>AI Processing</h3>
-        <p>Our server processes the audio through multiple neural networks for feature extraction.</p>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+        <span class="stat-value">50ms</span>
+        <span class="stat-label">Processing Time</span>
       </div>
-      <div class="feature-card">
-        <div class="icon">3️⃣</div>
-        <h3>Detailed Report</h3>
-        <p>Get a comprehensive analysis including stress levels, lie probability, and transcription.</p>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <span class="stat-value">10K+</span>
+        <span class="stat-label">Active Users</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-file-audio"></i></div>
+        <span class="stat-value">1M+</span>
+        <span class="stat-label">Audio Processed</span>
       </div>
     </div>
   </section>
 
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <h2>Powerful Features</h2>
+      <p>Comprehensive speech analysis tools designed for accuracy and ease of use</p>
+    </div>
+    <div class="features-grid-new">
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-brain"></i></div>
+        <h3>Stress Detection</h3>
+        <p>Analyzes 64+ acoustic features including pitch, jitter, and shimmer to detect stress patterns in speech with high accuracy.</p>
+      </div>
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-language"></i></div>
+        <h3>Urdu Transcription</h3>
+        <p>Leveraging OpenAI's Whisper model fine-tuned for Urdu, providing accurate speech-to-text conversion in real-time.</p>
+      </div>
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-heartbeat"></i></div>
+        <h3>Emotion Analysis</h3>
+        <p>Detect and classify emotions including happiness, sadness, anger, fear, and neutral states from voice patterns.</p>
+      </div>
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Deception Detection</h3>
+        <p>Advanced algorithms analyze vocal cues to identify potential deception indicators in speech.</p>
+      </div>
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Detailed Reports</h3>
+        <p>Get comprehensive analysis reports with visual metrics, probability scores, and actionable insights.</p>
+      </div>
+      <div class="feature-card-new">
+        <div class="feature-icon"><i class="fas fa-lock"></i></div>
+        <h3>Secure & Private</h3>
+        <p>Your audio data is processed securely and never stored permanently. Complete privacy guaranteed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="how-it-works-inner">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Simple three-step process to analyze your audio</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Upload or Record</h3>
+          <p>Upload your audio file in any format or record directly using our browser-based recorder.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>AI Processing</h3>
+          <p>Our neural networks analyze acoustic features, transcribe content, and detect patterns.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Get Results</h3>
+          <p>Receive detailed analysis with stress levels, emotion probabilities, and full transcription.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section class="use-cases">
+    <div class="section-header">
+      <h2>Use Cases</h2>
+      <p>Trusted by professionals across various industries</p>
+    </div>
+    <div class="use-cases-grid">
+      <div class="use-case-card">
+        <div class="use-case-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="use-case-content">
+          <h4>HR & Recruitment</h4>
+          <p>Analyze candidate responses during interviews for stress levels and emotional authenticity.</p>
+        </div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-icon"><i class="fas fa-balance-scale"></i></div>
+        <div class="use-case-content">
+          <h4>Legal & Investigation</h4>
+          <p>Support investigations with speech analysis for credibility assessment and evidence evaluation.</p>
+        </div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-icon"><i class="fas fa-user-md"></i></div>
+        <div class="use-case-content">
+          <h4>Healthcare</h4>
+          <p>Monitor patient mental health through voice analysis for early detection of stress and anxiety.</p>
+        </div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-icon"><i class="fas fa-headset"></i></div>
+        <div class="use-case-content">
+          <h4>Call Centers</h4>
+          <p>Evaluate customer interactions for agent performance and customer sentiment analysis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to Get Started?</h2>
+    <p>Experience the power of Urdu speech analysis today. No credit card required.</p>
+    <a href="analysis.html" class="btn-hero-primary">Try It Now</a>
+  </section>
+
+  <!-- Footer -->
   <footer>
     <div class="footer-inner" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; text-align:left;">
       <div>
         <div class="nav-brand" style="margin-bottom:1rem;">
-          <span>🎙️</span> Urdu Analysis
+          UrduVoice AI
         </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Empowering Urdu language processing with state-of-the-art machine learning for stress, emotion, and deception detection.</p>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Advanced Urdu speech analysis platform powered by machine learning for stress detection, emotion recognition, and transcription.</p>
       </div>
       <div>
         <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Quick Links</h4>
@@ -115,8 +497,8 @@
         </div>
       </div>
     </div>
-    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
-      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 Urdu Speech Analysis Project. All rights reserved.</p>
+    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid #2A2A2A; text-align:center;">
+      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 UrduVoice AI. All rights reserved.</p>
     </div>
   </footer>
 

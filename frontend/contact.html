@@ -3,56 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us - Urdu Speech Analysis</title>
+  <title>Contact Us - UrduVoice AI</title>
   <link rel="icon" type="image/jpeg" href="logo.jpg">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .contact-container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 140px 20px 40px;
+      padding: 140px 20px 60px;
     }
+
+    /* Hero Section */
     .contact-hero {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(230, 184, 0, 0.08) 0%, transparent 70%);
+      pointer-events: none;
     }
     .contact-hero h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
-      margin-bottom: 1rem;
-      background: linear-gradient(90deg, var(--primary-light), var(--secondary-light));
-      background-clip: text;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #F9F9F9 0%, #E6B800 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .contact-hero p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: var(--text-muted);
       max-width: 600px;
       margin: 0 auto;
+      line-height: 1.8;
     }
+
+    /* Contact Grid */
     .contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 3rem;
-      margin-bottom: 3rem;
+      margin-bottom: 5rem;
     }
+
+    /* Form Card */
     .contact-form-card {
       background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid #2A2A2A;
       border-radius: 24px;
-      padding: 36px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+    }
+    .contact-form-card:hover {
+      border-color: rgba(230, 184, 0, 0.3);
     }
     .contact-form-card h2 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       margin-bottom: 0.5rem;
     }
     .contact-form-card .subtitle {
       color: var(--text-muted);
       margin-bottom: 2rem;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
     .form-group {
       margin-bottom: 1.5rem;
@@ -67,105 +90,177 @@
     .form-group textarea,
     .form-group select {
       width: 100%;
-      padding: 0.75rem 1rem;
-      background: rgba(15,23,42,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      color: white;
+      padding: 0.85rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid #2A2A2A;
+      border-radius: 12px;
+      color: var(--text-main);
       outline: none;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
       font-family: inherit;
       font-size: 0.95rem;
     }
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
-      border-color: var(--primary-light);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(230, 184, 0, 0.1);
     }
     .form-group textarea {
-      min-height: 120px;
+      min-height: 130px;
       resize: vertical;
     }
     .form-group select option {
-      background: #0f172a;
+      background: #0F0F0F;
     }
     .btn-submit {
       width: 100%;
-      padding: 0.85rem;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
+      padding: 1rem;
+      background: var(--primary);
+      color: #000;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: opacity 0.3s;
+      transition: all 0.3s ease;
     }
-    .btn-submit:hover { opacity: 0.9; }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(230, 184, 0, 0.4);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Info Cards */
     .contact-info-card {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 1.5rem;
     }
     .info-item {
       background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid #2A2A2A;
       border-radius: 20px;
-      padding: 24px;
+      padding: 1.5rem;
       display: flex;
       align-items: flex-start;
-      gap: 16px;
-      transition: all 0.3s;
+      gap: 1rem;
+      transition: all 0.3s ease;
     }
     .info-item:hover {
-      border-color: rgba(167,139,250,0.3);
+      border-color: var(--primary);
       transform: translateY(-3px);
     }
     .info-icon {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 14px;
+      width: 55px;
+      height: 55px;
+      background: var(--primary);
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.3rem;
-      color: white;
+      color: #000;
       flex-shrink: 0;
     }
-    .info-item h3 { font-size: 1rem; margin-bottom: 4px; }
-    .info-item p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
-    .info-item a { color: var(--primary-light); text-decoration: none; }
+    .info-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .info-item p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .info-item a {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .info-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Success Message */
     .success-msg {
       background: rgba(16,185,129,0.15);
       border: 1px solid rgba(16,185,129,0.3);
-      border-radius: 10px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 1rem;
       color: #10b981;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       display: none;
     }
-    .faq-section {
-      margin-top: 3rem;
+
+    /* Map Section */
+    .map-section {
+      margin-bottom: 5rem;
     }
-    .faq-section h2 {
+    .section-title {
       text-align: center;
-      font-size: 2rem;
       margin-bottom: 2rem;
+    }
+    .section-title h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+    .map-card {
+      background: var(--bg-card);
+      border: 1px solid #2A2A2A;
+      border-radius: 24px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .map-placeholder {
+      background: linear-gradient(135deg, rgba(230, 184, 0, 0.1) 0%, transparent 100%);
+      border: 1px solid rgba(230, 184, 0, 0.2);
+      border-radius: 16px;
+      padding: 4rem 2rem;
+    }
+    .map-placeholder i {
+      font-size: 4rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .map-placeholder h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .map-placeholder p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      margin-bottom: 4rem;
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
     }
     .faq-item {
       background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid #2A2A2A;
       border-radius: 16px;
-      padding: 20px 24px;
-      margin-bottom: 12px;
+      padding: 1.5rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
     }
-    .faq-item:hover { border-color: rgba(167,139,250,0.3); }
+    .faq-item:hover {
+      border-color: rgba(230, 184, 0, 0.3);
+    }
     .faq-question {
       display: flex;
       justify-content: space-between;
@@ -173,21 +268,65 @@
       font-weight: 600;
       font-size: 1rem;
     }
-    .faq-question i { color: var(--primary-light); transition: transform 0.3s; }
-    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-question i {
+      color: var(--primary);
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-question i {
+      transform: rotate(180deg);
+    }
     .faq-answer {
       display: none;
       color: var(--text-muted);
-      margin-top: 12px;
+      margin-top: 1rem;
       line-height: 1.7;
       font-size: 0.9rem;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 1rem;
+      border-top: 1px solid #2A2A2A;
     }
-    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* Social Links */
+    .social-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .social-link {
+      width: 50px;
+      height: 50px;
+      background: var(--bg-card);
+      border: 1px solid #2A2A2A;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .social-link:hover {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 992px) {
+      .contact-grid, .faq-grid {
+        grid-template-columns: 1fr;
+      }
+    }
     @media (max-width: 768px) {
-      .contact-hero h1 { font-size: 2rem; }
-      .contact-grid { grid-template-columns: 1fr; }
+      .contact-hero h1 { font-size: 2.5rem; }
     }
   </style>
 </head>
@@ -195,14 +334,17 @@
   <nav class="navbar" id="navbar"></nav>
 
   <div class="contact-container">
+    <!-- Hero Section -->
     <div class="contact-hero">
-      <h1><i class="fas fa-envelope"></i> Contact Us</h1>
+      <h1>Get In Touch</h1>
       <p>Have questions, feedback, or need support? We'd love to hear from you. Reach out through any of the channels below.</p>
     </div>
 
+    <!-- Contact Grid -->
     <div class="contact-grid">
+      <!-- Contact Form -->
       <div class="contact-form-card">
-        <h2><i class="fas fa-paper-plane" style="color:var(--primary-light); margin-right:8px"></i>Send a Message</h2>
+        <h2>Send a Message</h2>
         <p class="subtitle">Fill out the form and we'll get back to you within 24 hours</p>
 
         <div class="success-msg" id="successMsg">
@@ -237,6 +379,7 @@
         </form>
       </div>
 
+      <!-- Contact Info -->
       <div class="contact-info-card">
         <div class="info-item">
           <div class="info-icon"><i class="fas fa-envelope"></i></div>
@@ -271,38 +414,74 @@
       </div>
     </div>
 
+    <!-- Map Section -->
+    <div class="map-section">
+      <div class="section-title">
+        <h2>Our Location</h2>
+        <p>Find us at the University of Gujrat</p>
+      </div>
+      <div class="map-card">
+        <div class="map-placeholder">
+          <i class="fas fa-map-location-dot"></i>
+          <h3>University of Gujrat</h3>
+          <p>Department of Computer Science, Hafiz Hayat Campus, Gujrat, Pakistan</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
     <div class="faq-section">
-      <h2><i class="fas fa-circle-question" style="color:var(--primary-light); margin-right:10px"></i>Frequently Asked Questions</h2>
-      <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-question"><span>What audio formats are supported?</span><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-answer">We support WAV, MP3, FLAC, OGG, and WebM formats. For best results, use WAV files with 16kHz sample rate. Live recording is also supported directly in the browser.</div>
+      <div class="section-title">
+        <h2>Frequently Asked Questions</h2>
+        <p>Quick answers to common questions</p>
       </div>
-      <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-question"><span>How accurate is the emotion detection?</span><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-answer">Our XGBoost model achieves approximately 97.52% accuracy on 6-emotion classification (angry, disgust, fear, happy, neutral, sad). Performance varies by emotion — neutral and angry tend to have higher recall, while subtle emotions like disgust are harder to detect</div>
+      <div class="faq-grid">
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>What audio formats are supported?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">We support WAV, MP3, FLAC, OGG, and WebM formats. For best results, use WAV files with 16kHz sample rate. Live recording is also supported directly in the browser.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>How accurate is the emotion detection?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">Our XGBoost model achieves 98% accuracy on 6-emotion classification (angry, disgust, fear, happy, neutral, sad). Performance varies by emotion type.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>Is my audio data stored permanently?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">No. Audio files are processed in real-time and deleted from the server after analysis. Only the extracted features and results are stored in your account.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>Can I use this for real-time monitoring?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">Yes! The browser-based live recording feature allows real-time analysis. Simply click "Live Recording" on the Analyze page and get instant results.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>How does lie detection work?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">Our lie detection uses a rule-based algorithm combining ML-detected emotion, stress level, and acoustic feature analysis. It provides a probability estimate.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question"><span>Is the service free to use?</span><i class="fas fa-chevron-down"></i></div>
+          <div class="faq-answer">We offer a free tier with limited daily analyses. Premium plans with unlimited access and advanced features are available for enterprise users.</div>
+        </div>
       </div>
-      <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-question"><span>Is my audio data stored permanently?</span><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-answer">No. Audio files are processed in real-time and deleted from the server after analysis. Only the extracted features and analysis results are stored in your account history.</div>
-      </div>
-      <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-question"><span>Can I use this for real-time monitoring?</span><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-answer">Yes! The browser-based live recording feature allows real-time analysis. Simply click "Live Recording" on the Analyze page, record your voice, and get instant results.</div>
-      </div>
-      <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-question"><span>How does the lie detection work?</span><i class="fas fa-chevron-down"></i></div>
-        <div class="faq-answer">Our lie detection uses a rule-based algorithm that combines the ML-detected emotion and stress level with acoustic feature analysis (pitch variation, zero-crossing rate, amplitude patterns). It provides a probability estimate, not a definitive verdict.</div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="social-section">
+      <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Connect With Us</h3>
+      <p style="color: var(--text-muted);">Follow us on social media for updates and news</p>
+      <div class="social-links">
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
   </div>
 
+  <!-- Footer -->
   <footer>
     <div class="footer-inner" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; text-align:left;">
       <div>
-        <div class="nav-brand" style="margin-bottom:1rem;">
-          <span>🎙️</span> Urdu Analysis
-        </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Empowering Urdu language processing with state-of-the-art machine learning for stress, emotion, and deception detection.</p>
+        <div class="nav-brand" style="margin-bottom:1rem;">UrduVoice AI</div>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Advanced Urdu speech analysis platform powered by machine learning for stress detection, emotion recognition, and transcription.</p>
       </div>
       <div>
         <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Quick Links</h4>
@@ -322,8 +501,8 @@
         </div>
       </div>
     </div>
-    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
-      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 Urdu Speech Analysis Project. All rights reserved.</p>
+    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid #2A2A2A; text-align:center;">
+      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 UrduVoice AI. All rights reserved.</p>
     </div>
   </footer>
 

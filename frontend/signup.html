@@ -3,34 +3,242 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - Urdu Speech Analysis</title>
+  <title>Sign Up - UrduVoice AI</title>
   <link rel="icon" type="image/jpeg" href="logo.jpg">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .auth-container {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 20px 40px;
+      position: relative;
+    }
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(230, 184, 0, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid #2A2A2A;
+      border-radius: 28px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-card:hover {
+      border-color: rgba(230, 184, 0, 0.2);
+    }
+    .auth-logo {
+      width: 70px;
+      height: 70px;
+      background: var(--primary);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.8rem;
+      color: #000;
+    }
+    .auth-card h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .auth-card .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .form-group label i {
+      color: var(--primary-light);
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid #2A2A2A;
+      border-radius: 12px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(230, 184, 0, 0.1);
+    }
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .btn-auth {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(230, 184, 0, 0.3);
+    }
+    .btn-auth:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #2A2A2A;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .auth-footer a {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .auth-footer a:hover {
+      color: var(--primary);
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #2A2A2A;
+    }
+    .divider span {
+      padding: 0 1rem;
+    }
+    .social-auth {
+      display: flex;
+      gap: 1rem;
+    }
+    .social-btn {
+      flex: 1;
+      padding: 0.9rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid #2A2A2A;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+    .social-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(230, 184, 0, 0.05);
+    }
+    .social-btn i {
+      font-size: 1.1rem;
+    }
+    .google-btn {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: #fff;
+      border: 1px solid #2A2A2A;
+      border-radius: 12px;
+      color: #000;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    .google-btn:hover {
+      background: #f1f1f1;
+      transform: translateY(-1px);
+    }
+    .google-btn i {
+      font-size: 1.1rem;
+      color: #E6B800;
+    }
+    .features-list {
+      display: none;
+    }
+    @media (max-width: 480px) {
+      .auth-card { padding: 2rem; }
+      .auth-card h2 { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar" id="navbar"></nav>
 
   <div class="auth-container">
     <div class="auth-card">
+      <div class="auth-logo"><i class="fas fa-microphone"></i></div>
       <h2>Create Account</h2>
-      <p>Join us to start analyzing Urdu speech</p>
-      
+      <p class="subtitle">Join us to start analyzing Urdu speech</p>
+
       <form id="signupForm">
         <div class="form-group">
-          <label for="name">Full Name</label>
+          <label><i class="fas fa-user"></i> Full Name</label>
           <input type="text" id="name" placeholder="John Doe" required>
         </div>
         <div class="form-group">
-          <label for="email">Email Address</label>
+          <label><i class="fas fa-envelope"></i> Email Address</label>
           <input type="email" id="email" placeholder="name@example.com" required>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label><i class="fas fa-lock"></i> Password</label>
           <input type="password" id="password" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn-auth">Create Account</button>
       </form>
+
+      <div class="divider"><span>or continue with</span></div>
+
+      <div id="googleBtn" style="display: flex; justify-content: center;"></div>
 
       <div class="auth-footer">
         Already have an account? <a href="login.html">Log in</a>
@@ -41,10 +249,8 @@
   <footer>
     <div class="footer-inner" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; text-align:left;">
       <div>
-        <div class="nav-brand" style="margin-bottom:1rem;">
-          <span>🎙️</span> Urdu Analysis
-        </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Empowering Urdu language processing with state-of-the-art machine learning for stress, emotion, and deception detection.</p>
+        <div class="nav-brand" style="margin-bottom:1rem;">UrduVoice AI</div>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Advanced Urdu speech analysis platform powered by machine learning for stress detection, emotion recognition, and transcription.</p>
       </div>
       <div>
         <h4 style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">Quick Links</h4>
@@ -63,14 +269,85 @@
         </div>
       </div>
     </div>
-    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
-      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 Urdu Speech Analysis Project. All rights reserved.</p>
+    <div style="max-width:1100px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid #2A2A2A; text-align:center;">
+      <p style="font-size:0.8rem; color:var(--text-muted);">&copy; 2026 UrduVoice AI. All rights reserved.</p>
     </div>
   </footer>
 
   <script src="auth.js"></script>
   <script src="nav.js"></script>
   <script>
+    // Google Sign-In callback
+    function handleGoogleSignIn(response) {
+      const credential = response.credential;
+      
+      // Decode JWT token to get user info
+      const payload = JSON.parse(atob(credential.split('.')[1]));
+      const email = payload.email;
+      const name = payload.name;
+      
+      // Send to backend
+      apiCall('/api/google-login', {
+        method: 'POST',
+        body: JSON.stringify({ token: credential, email, name })
+      })
+      .then(data => {
+        setUser(data.user, data.token);
+        window.location.href = 'home.html';
+      })
+      .catch(err => {
+        alert('Google login failed: ' + err.message);
+      });
+    }
+
+    let googleClientId = '';
+    
+    // Initialize Google Sign-In
+    async function initGoogleSignIn() {
+      try {
+        // Wait for Google SDK
+        let attempts = 0;
+        while (typeof google === 'undefined' || !google.accounts && attempts < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+        
+        if (typeof google === 'undefined' || !google.accounts) {
+          console.error('Google SDK failed to load');
+          return;
+        }
+        
+        // Fetch Client ID
+        const res = await fetch(API + '/api/config');
+        const config = await res.json();
+        googleClientId = config.google_client_id;
+        
+        if (googleClientId) {
+          google.accounts.id.initialize({
+            client_id: googleClientId,
+            callback: handleGoogleSignIn
+          });
+          
+          // Render the official Google button
+          google.accounts.id.renderButton(
+            document.getElementById('googleBtn'),
+            {
+              theme: 'outline',
+              size: 'large',
+              width: 300,
+              text: 'continue_with'
+            }
+          );
+          console.log('Google Sign-In ready');
+        }
+      } catch (err) {
+        console.error('Google init error:', err);
+      }
+    }
+    
+    initGoogleSignIn();
+
+    // Regular signup form
     document.getElementById('signupForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const name = document.getElementById('name').value;
