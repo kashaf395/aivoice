@@ -223,3 +223,10 @@ def ensure_admin_exists():
         }
         db.users.insert_one(admin_user)
         print("[DB] Default admin created: admin@urduspeech.ai / admin123")
+
+client = MongoClient(
+    os.getenv("MONGO_URI"),
+    tls=True,
+    serverSelectionTimeoutMS=30000,
+    connectTimeoutMS=30000
+)
