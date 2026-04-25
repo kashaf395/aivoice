@@ -112,6 +112,35 @@ def get_all_reports(limit=50):
     return list(reports)
 
 
+def get_all_reports_with_users(limit=50):
+    db = get_db()
+    from bson import ObjectId
+
+    # First get all reports with user_id as string
+    reports = list(db.reports.find().sort("created_at", -1).limit(limit))
+
+    # Enrich with user info
+    for r in reports:
+        user_id = r.get("user_id")
+        if user_id:
+            try:
+                user = db.users.find_one({"_id": ObjectId(user_id)}, {"name": 1, "email": 1})
+                if user:
+                    r["user_name"] = user.get("name", "Unknown")
+                    r["user_email"] = user.get("email", "-")
+                else:
+                    r["user_name"] = "Unknown"
+                    r["user_email"] = "-"
+            except:
+                r["user_name"] = "Unknown"
+                r["user_email"] = "-"
+        else:
+            r["user_name"] = "Unknown"
+            r["user_email"] = "-"
+
+    return reports
+
+
 # =====================
 # Admin Stats
 # =====================
@@ -142,6 +171,29 @@ def get_all_users():
     db = get_db()
     users = db.users.find({}, {"password": 0}).sort("created_at", -1)
     return list(users)
+
+
+def delete_user(user_id):
+    db = get_db()
+    from bson import ObjectId
+    result = db.users.delete_one({"_id": ObjectId(user_id)})
+    # Also delete all reports of this user
+    db.reports.delete_many({"user_id": user_id})
+    return result.deleted_count > 0
+
+
+def delete_report(report_id):
+    db = get_db()
+    from bson import ObjectId
+    result = db.reports.delete_one({"_id": ObjectId(report_id)})
+    return result.deleted_count > 0
+
+
+def delete_message(message_id):
+    db = get_db()
+    from bson import ObjectId
+    result = db.contact_messages.delete_one({"_id": ObjectId(message_id)})
+    return result.deleted_count > 0
 
 
 def update_user_password(email, new_password_hash):

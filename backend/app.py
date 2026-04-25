@@ -12,7 +12,8 @@ from modules.database import (
     get_db, close_db,
     create_user, find_user_by_email, find_user_by_id, update_user_stats, update_user_profile,
     save_analysis_report, get_user_reports, get_all_reports, get_admin_stats,
-    get_all_users, save_contact_message, get_contact_messages, ensure_admin_exists
+    get_all_users, save_contact_message, get_contact_messages, ensure_admin_exists,
+    delete_user, delete_report, delete_message, get_all_reports_with_users
 )
 
 # =====================
@@ -592,15 +593,58 @@ def admin_stats():
         return jsonify({"error": "Admin access required"}), 403
 
     stats = get_admin_stats()
-    recent = get_all_reports(limit=20)
+    recent = get_all_reports_with_users(limit=20)
     for r in recent:
         r["_id"] = str(r["_id"])
-        if "user_id" in r:
+        if "user_id" in r and r["user_id"]:
             r["user_id"] = str(r["user_id"])
         if "created_at" in r:
             r["created_at"] = r["created_at"].isoformat()
 
     return jsonify({"stats": stats, "recent": recent}), 200
+
+
+@app.route("/api/admin/users/<user_id>", methods=["DELETE"])
+def admin_delete_user(user_id):
+    user = get_current_user(request)
+    if not user or user.get("role") != "admin":
+        return jsonify({"error": "Admin access required"}), 403
+
+    # Prevent admin from deleting themselves
+    if str(user["_id"]) == user_id:
+        return jsonify({"error": "Cannot delete your own account"}), 400
+
+    success = delete_user(user_id)
+    if success:
+        return jsonify({"message": "User deleted successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to delete user"}), 500
+
+
+@app.route("/api/admin/reports/<report_id>", methods=["DELETE"])
+def admin_delete_report(report_id):
+    user = get_current_user(request)
+    if not user or user.get("role") != "admin":
+        return jsonify({"error": "Admin access required"}), 403
+
+    success = delete_report(report_id)
+    if success:
+        return jsonify({"message": "Report deleted successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to delete report"}), 500
+
+
+@app.route("/api/admin/messages/<message_id>", methods=["DELETE"])
+def admin_delete_message(message_id):
+    user = get_current_user(request)
+    if not user or user.get("role") != "admin":
+        return jsonify({"error": "Admin access required"}), 403
+
+    success = delete_message(message_id)
+    if success:
+        return jsonify({"message": "Message deleted successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to delete message"}), 500
 
 
 @app.route("/api/admin/users", methods=["GET"])
