@@ -71,6 +71,32 @@ except FileNotFoundError as e:
     print("[App Startup] Please run 'python train_models.py' first!")
     ml_model, label_encoder, feature_scaler = None, None, None
 
+# =====================
+# WARM-UP: Preload all libraries with dummy prediction
+# =====================
+def warmup_model():
+    """Run dummy prediction to preload libraries and eliminate first-request delay"""
+    if ml_model is None:
+        return
+    
+    print("\n[Warmup] Running dummy prediction to preload libraries...")
+    try:
+        import numpy as np
+        import librosa
+        
+        # Create dummy features (64 features)
+        dummy_features = np.random.randn(1, 64).astype(np.float32)
+        
+        # Run prediction (this loads all internal functions)
+        _ = predict_stress(dummy_features, ml_model, label_encoder, feature_scaler)
+        
+        print("[Warmup] ✅ Model warmed up! First request will be fast.")
+    except Exception as e:
+        print(f"[Warmup] Warning: {e}")
+
+# Run warmup
+warmup_model()
+
 TEMP_DIR = "temp_audio"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
